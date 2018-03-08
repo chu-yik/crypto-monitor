@@ -1,5 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const config = require('config');
+const port = config.get('port');
 
 class MyCryptoServer {
 	constructor(router) {
@@ -11,8 +13,8 @@ class MyCryptoServer {
 		this.app.use(bodyParser.json());
 		this.app.route('/:target/:base').get(this.router.getCryptoPair);
 		this.app.use('/', this.router.send404);
-		this.app.listen(8888, () => {
-			console.log('Server started, listening on port 8888');
+		this.app.listen(port, () => {
+			console.log('Server started, listening on port ' + port);
 			callback();
 		});
 	}
