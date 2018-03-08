@@ -4,7 +4,7 @@
   "description": "a real time cryptocurrency monitoring app, as an exercise for learning node.js and react, also as submission for a programming test",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test"
+    "test": "mocha --exit"
   },
   "repository": {
     "type": "git",
