@@ -1,0 +1,23 @@
+{
+  "name": "crypto-monitor",
+  "version": "1.0.0",
+  "description": "a real time cryptocurrency monitoring app, as an exercise for learning node.js and react, also as submission for a programming test",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chu-yik/crypto-monitor.git"
+  },
+  "keywords": [
+    "node.js",
+    "react"
+  ],
+  "author": "MC",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chu-yik/crypto-monitor/issues"
+  },
+  "homepage": "https://github.com/chu-yik/crypto-monitor#readme"
+}
