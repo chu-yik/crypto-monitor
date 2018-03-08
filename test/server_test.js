@@ -1,3 +1,8 @@
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const expect = chai.expect;
+chai.use(chaiHttp);
+
 const MyCryptoServer = require('../app/server');
 const testServer = new MyCryptoServer();
 
@@ -49,8 +54,13 @@ describe('Crypto-monitor server tests', () => {
 	});
 
 	describe('Invalid requests', () => {
-		it.skip('should return 404 error', (done) => {
-			done();
+		it('should return 404 error', (done) => {
+			chai.request(testServer)
+				.get('/random')
+				.end( (err, res) => {
+					expect(res).to.have.status(404);
+					done();
+				});
 		});
 	});
 });
