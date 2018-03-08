@@ -4,13 +4,15 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 
 const MyCryptoServer = require('../app/server');
-const testServer = new MyCryptoServer();
+const DefaultRouter = require('../app/router/default-router');
+const router = new DefaultRouter();
+const testServer = new MyCryptoServer(router);
+
 
 describe('Crypto-monitor server tests', () => {
 
-	before( (done) => {
-		testServer.start();
-		done();
+	before((done) => {
+		testServer.start(done);
 	});
 
 	describe.skip('/GET /:target/:base', () => {
@@ -55,7 +57,7 @@ describe('Crypto-monitor server tests', () => {
 
 	describe('Invalid requests', () => {
 		it('should return 404 error', (done) => {
-			chai.request(testServer)
+			chai.request(testServer.server)
 				.get('/random')
 				.end( (err, res) => {
 					expect(res).to.have.status(404);
