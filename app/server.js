@@ -16,8 +16,6 @@ class MyCryptoServer {
 			callback();
 		});
 	}
-
-	get server() { return this.app; }
 }
 
 module.exports = MyCryptoServer;

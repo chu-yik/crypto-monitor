@@ -57,7 +57,7 @@ describe('Crypto-monitor server tests', () => {
 
 	describe('Invalid requests', () => {
 		it('should return 404 error', (done) => {
-			chai.request(testServer.server)
+			chai.request(testServer.app)
 				.get('/random')
 				.end( (err, res) => {
 					expect(res).to.have.status(404);
