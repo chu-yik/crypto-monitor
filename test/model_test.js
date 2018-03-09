@@ -38,6 +38,8 @@ describe('Crypto pair model tests', () => {
 
 	describe('model to json', () => {
 		it('should return expected info', (done) => {
+			const c = new CryptoPair(CryptoMock.btc_usd_cap);
+			expect(c.customJSON()).to.eql(CryptoMock.btc_usd);
 			done();
 		});
 	});

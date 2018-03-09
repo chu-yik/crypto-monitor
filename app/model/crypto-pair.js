@@ -16,4 +16,13 @@ const cryptoPairSchema = new Schema({
 	lastUpdated: Number,
 });
 
+/**
+ * Returns a custom JSON without the _id field
+ */
+cryptoPairSchema.methods.customJSON = function() {
+	const json = this.toJSON();
+	delete json._id;
+	return json;
+};
+
 module.exports = mongoose.model('CryptoPair', cryptoPairSchema);
