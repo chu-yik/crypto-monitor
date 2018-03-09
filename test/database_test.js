@@ -64,11 +64,23 @@ describe('Database integration tests', () => {
 
 	describe('Upsert from mongoose model', () => {
 		it('should update the record if existing', (done) => {
-			done();
+			const new_btc = new CryptoPair(CryptoMock.btc_usd_new);
+			new_btc.upsert((err, doc) => {
+				CryptoPair.findOne({ base: 'btc', target: 'usd' }, (err, doc) => {
+					expect(doc.customJSON()).to.eql(CryptoMock.btc_usd_new);
+					done();
+				});
+			});
 		});
 
 		it('should insert the record if not existing', (done) => {
-			done();
+			const new_eth = new CryptoPair(CryptoMock.eth_usd_new);
+			new_eth.upsert((err, doc) => {
+				CryptoPair.findOne({ base: 'eth', target: 'usd' }, (err, doc) => {
+					expect(doc.customJSON()).to.eql(CryptoMock.eth_usd_new);
+					done();
+				});
+			});
 		});
 	});
 });

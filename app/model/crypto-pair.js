@@ -31,4 +31,24 @@ cryptoPairSchema.methods.customJSON = function() {
 	return json;
 };
 
+/**
+ * Update or insert the model in DB.
+ * The updated / inserted doc will be passed back to the callback
+ */
+cryptoPairSchema.methods.upsert = function(callback) {
+	const query = {};
+	query.target = this.target;
+	query.base = this.base;
+	const newData = {};
+	newData.price = this.price;
+	newData.volume = this.volume;
+	newData.change = this.change;
+	newData.lastUpdated = this.lastUpdated;
+	this.model('CryptoPair')
+		.findOneAndUpdate(query, newData, { upsert: true, new: true })
+		.exec((err, doc) => {
+			callback(err, doc);
+		});
+};
+
 module.exports = mongoose.model('CryptoPair', cryptoPairSchema);
