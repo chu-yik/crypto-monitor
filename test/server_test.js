@@ -6,6 +6,7 @@ chai.use(chaiHttp);
 const MyCryptoServer = require('../app/server');
 const DefaultRouter = require('../app/router/default-router');
 const CryptoPair = require('../app/model/crypto-pair');
+const CryptoMock = require('./mock/crypto-mock');
 
 const router = new DefaultRouter();
 const testServer = new MyCryptoServer(router);
