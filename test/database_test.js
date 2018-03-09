@@ -1,4 +1,24 @@
-describe.skip('Database integration tests', () => {
+const mongoose = require('mongoose');
+const config = require('config');
+const dbUrl = config.get('dbUrl');
+
+describe('Database integration tests', () => {
+	before((done) => {
+		mongoose.connect(dbUrl);
+		mongoose.connection.on('error', console.error.bind(console, 'Database Connection Error'));
+		mongoose.connection.once('open', () => {
+			console.log('connected to DB: ' + dbUrl);
+			done();
+		});
+	});
+
+	after((done) => {
+		mongoose.connection.close(() => {
+			console.log('closing connection to DB: ' + dbUrl);
+			done();
+		});
+	});
+
 	describe('Query from mongoose model', () => {
 		it('should be case-insensitive', (done) => {
 			done();
