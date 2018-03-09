@@ -1,3 +1,4 @@
+const sinon = require('sinon');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const expect = chai.expect;
@@ -25,15 +26,31 @@ describe('Crypto-monitor server tests', () => {
 		});
 	});
 
-	describe.skip('/GET /:target/:base', () => {
+	describe('/GET /:target/:base', () => {
 
 		describe('when queried crypto pair in DB is up to date', () => {
 			it('should return the correct crypto pair from DB', (done) => {
-				done();
+				const expected = CryptoMock.btc_usd;
+				const clock = sinon.useFakeTimers({ now: expected.lastUpdated * 1000 });
+				chai.request(testServer.app)
+					.get('/usd/btc')
+					.end((err, res) => {
+						expect(res.body).to.eql(expected);
+						clock.restore();
+						done();
+					});
 			});
 
 			it('should be case-insensitive', (done) => {
-				done();
+				const expected = CryptoMock.btc_usd;
+				const clock = sinon.useFakeTimers({ now: expected.lastUpdated * 1000 });
+				chai.request(testServer.app)
+					.get('/UsD/bTc')
+					.end((err, res) => {
+						expect(res.body).to.eql(expected);
+						clock.restore();
+						done();
+					});
 			});
 		});
 
