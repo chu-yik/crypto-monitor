@@ -2,13 +2,21 @@ const mongoose = require('mongoose');
 const config = require('config');
 const dbUrl = config.get('dbUrl');
 
+const CryptoPair = require('../app/model/crypto-pair');
+const CryptoMock = require('./mock/crypto-mock');
+
 describe('Database integration tests', () => {
 	before((done) => {
 		mongoose.connect(dbUrl);
 		mongoose.connection.on('error', console.error.bind(console, 'Database Connection Error'));
 		mongoose.connection.once('open', () => {
-			console.log('connected to DB: ' + dbUrl);
-			done();
+			const c = new CryptoPair(CryptoMock.btc_usd);
+			CryptoPair.remove({}, (err) => {
+				c.save((err) => {
+					console.log('connected to and initialised DB: ' + dbUrl);
+					done();
+				});
+			});
 		});
 	});
 
