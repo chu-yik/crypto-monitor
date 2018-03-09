@@ -32,14 +32,14 @@ describe('Database integration tests', () => {
 	describe('Query from mongoose model', () => {
 		it('should be case-insensitive', (done) => {
 			CryptoPair.findOne({ base: 'BtC', target: 'uSd' }, (err, doc) => {
-				expect(doc.customJSON()).to.eql(CryptoMock.btc_usd);	
+				expect(doc.customJSON()).to.eql(CryptoMock.btc_usd);
 				done();
 			});
 		});
 
 		it('should return the record if found', (done) => {
 			CryptoPair.findOne({ base: 'btc', target: 'usd' }, (err, doc) => {
-				expect(doc.customJSON()).to.eql(CryptoMock.btc_usd);	
+				expect(doc.customJSON()).to.eql(CryptoMock.btc_usd);
 				done();
 			});
 		});
