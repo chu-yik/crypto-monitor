@@ -1,4 +1,5 @@
 const config = require('config');
+const api = config.get('api');
 
 module.exports.shouldUpdateFromApi = function(doc) {
 	if (doc) {
@@ -9,4 +10,8 @@ module.exports.shouldUpdateFromApi = function(doc) {
 		return epochSecNow - interval > lastUpdated; 
 	}
 	return true;
+};
+
+module.exports.apiForQuery = function(query) {
+	return api + query.base.toLowerCase() + '-' + query.target.toLowerCase();
 };

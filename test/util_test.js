@@ -2,6 +2,7 @@ const sinon = require('sinon');
 const chai = require('chai');
 const expect = chai.expect;
 const config = require('config');
+const api = config.get('api');
 const interval = config.get('expireInSec');
 const util = require('../app/util/util');
 
@@ -32,6 +33,14 @@ describe('Custom util tests', () => {
 			const doc = CryptoPair(CryptoMock.btc_usd);
 			clock = sinon.useFakeTimers({ now: (doc.lastUpdated + interval) * 1000 });
 			expect(util.shouldUpdateFromApi(doc)).to.be.false;
+		});
+	});
+
+	describe('#apiForQuery', () => {
+		it('should return the correct api', () => {
+			const expected = api + 'btc-usd';
+			const query = { target: 'UsD', base: 'bTc' };
+			expect(util.apiForQuery(query)).to.eql(expected);
 		});
 	});
 });
