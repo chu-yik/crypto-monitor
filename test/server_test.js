@@ -6,12 +6,13 @@ chai.use(chaiHttp);
 
 const MyCryptoServer = require('../app/server');
 const DefaultRouter = require('../app/router/default-router');
+const RequestSender = require('../app/request-sender');
 const CryptoPair = require('../app/model/crypto-pair');
 const CryptoMock = require('./mock/crypto-mock');
 
-const router = new DefaultRouter();
+const sender = new RequestSender();
+const router = new DefaultRouter(sender);
 const testServer = new MyCryptoServer(router);
-
 
 describe('Crypto-monitor server tests', () => {
 
@@ -56,7 +57,14 @@ describe('Crypto-monitor server tests', () => {
 
 		describe('when queried crypto pair in DB is not found / has expired', () => {
 			it('should send http get request to third party api', (done) => {
-				done();
+				const spy = sinon.spy(sender, 'sendRequest');
+				chai.request(testServer.app)
+					.get('/usd/eth')
+					.end((err, res) => {
+						expect(spy.calledOnce).to.be.true;
+						sender.sendRequest.restore();
+						done();
+					});
 			});
 
 			it('should update the cryto pair in DB when received response data', (done) => {
