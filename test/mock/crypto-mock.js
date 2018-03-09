@@ -25,6 +25,19 @@ module.exports.btc_usd_cap = {
 };
 
 /**
+ * mock data for btc-usd crypto pair, 
+ * with a last updated time that is unlikely to expire 
+ */
+module.exports.btc_usd_never_expire = {
+	base: 'BTC',
+	target: 'USD',
+	price: 135.79,
+	volume: 23.45,
+	change: -0.98,
+	lastUpdated: 32479920000 // 2999-04-01
+};
+
+/**
  * mock data for btc-usd cryto pair - updated info
  */
 module.exports.btc_usd_new = {
