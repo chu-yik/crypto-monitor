@@ -1,3 +1,4 @@
+const sinon = require('sinon');
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const expect = chai.expect;
@@ -5,31 +6,65 @@ chai.use(chaiHttp);
 
 const MyCryptoServer = require('../app/server');
 const DefaultRouter = require('../app/router/default-router');
-const router = new DefaultRouter();
-const testServer = new MyCryptoServer(router);
+const RequestSender = require('../app/request-sender');
+const CryptoPair = require('../app/model/crypto-pair');
+const CryptoMock = require('./mock/crypto-mock');
 
+const sender = new RequestSender();
+const router = new DefaultRouter(sender);
+const testServer = new MyCryptoServer(router);
 
 describe('Crypto-monitor server tests', () => {
 
 	before((done) => {
-		testServer.start(done);
+		testServer.connectToDatabase(() => {
+			const c = new CryptoPair(CryptoMock.btc_usd);
+			CryptoPair.remove({}, (err) => {
+				c.save((err) => {
+					testServer.start(done);
+				});
+			});
+		});
 	});
 
-	describe.skip('/GET /:target/:base', () => {
+	describe('/GET /:target/:base', () => {
 
 		describe('when queried crypto pair in DB is up to date', () => {
 			it('should return the correct crypto pair from DB', (done) => {
-				done();
+				const expected = CryptoMock.btc_usd;
+				const clock = sinon.useFakeTimers({ now: expected.lastUpdated * 1000 });
+				chai.request(testServer.app)
+					.get('/usd/btc')
+					.end((err, res) => {
+						expect(res.body).to.eql(expected);
+						clock.restore();
+						done();
+					});
 			});
 
 			it('should be case-insensitive', (done) => {
-				done();
+				const expected = CryptoMock.btc_usd;
+				const clock = sinon.useFakeTimers({ now: expected.lastUpdated * 1000 });
+				chai.request(testServer.app)
+					.get('/UsD/bTc')
+					.end((err, res) => {
+						expect(res.body).to.eql(expected);
+						clock.restore();
+						done();
+					});
 			});
 		});
 
 		describe('when queried crypto pair in DB is not found / has expired', () => {
 			it('should send http get request to third party api', (done) => {
-				done();
+				const spy = sinon.spy(sender, 'sendRequest');
+				chai.request(testServer.app)
+					.get('/usd/eth')
+					.end((err, res) => {
+						expect(spy.calledOnce).to.be.true;
+						sender.sendRequest.restore();
+						done();
+					});
 			});
 
 			it('should update the cryto pair in DB when received response data', (done) => {
