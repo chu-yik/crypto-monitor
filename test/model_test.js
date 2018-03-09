@@ -1,11 +1,23 @@
+const chai = require('chai');
+const expect = chai.expect;
+const CryptoPair = require('../app/model/crypto-pair');
+
 describe('Crypto pair model tests', () => {
 	describe('model validation', () => {
 		it('should be invalid if base is empty', (done) => {
-			done();
+			const c = new CryptoPair({ target: 'usd' });
+			c.validate((err) => {
+				expect(err.errors.base).to.exist;
+				done();
+			});
 		});
 
 		it('should be invalid if target is empty', (done) => {
-			done();
+			const c = new CryptoPair({ base: 'btc' });
+			c.validate((err) => {
+				expect(err.errors.target).to.exist;
+				done();
+			});
 		});
 	});
 
