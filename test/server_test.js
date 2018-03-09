@@ -5,6 +5,8 @@ chai.use(chaiHttp);
 
 const MyCryptoServer = require('../app/server');
 const DefaultRouter = require('../app/router/default-router');
+const CryptoPair = require('../app/model/crypto-pair');
+
 const router = new DefaultRouter();
 const testServer = new MyCryptoServer(router);
 
@@ -12,7 +14,14 @@ const testServer = new MyCryptoServer(router);
 describe('Crypto-monitor server tests', () => {
 
 	before((done) => {
-		testServer.start(done);
+		testServer.connectToDatabase(() => {
+			const c = new CryptoPair(CryptoMock.btc_usd);
+			CryptoPair.remove({}, (err) => {
+				c.save((err) => {
+					testServer.start(done);
+				});
+			});
+		});
 	});
 
 	describe.skip('/GET /:target/:base', () => {
