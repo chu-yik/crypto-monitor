@@ -52,9 +52,13 @@ describe('Database integration tests', () => {
 		});
 	});
 
-	describe('Save from mongoose model', () => {
-		it('should throw error for duplicated index', (done) => {
-			done();
+	describe('Enforcing unique compound index', () => {
+		it('should throw error for duplicated save', (done) => {
+			const dup = new CryptoPair(CryptoMock.btc_usd);
+			dup.save((err) => {
+				expect(err).to.exist;
+				done();
+			});
 		});
 	});
 
