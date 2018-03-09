@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const config = require('config');
 const dbUrl = config.get('dbUrl');
+const chai = require('chai');
+const expect = chai.expect;
 
 const CryptoPair = require('../app/model/crypto-pair');
 const CryptoMock = require('./mock/crypto-mock');
@@ -29,15 +31,24 @@ describe('Database integration tests', () => {
 
 	describe('Query from mongoose model', () => {
 		it('should be case-insensitive', (done) => {
-			done();
+			CryptoPair.findOne({ base: 'BtC', target: 'uSd' }, (err, doc) => {
+				expect(doc.customJSON()).to.eql(CryptoMock.btc_usd);	
+				done();
+			});
 		});
 
 		it('should return the record if found', (done) => {
-			done();
+			CryptoPair.findOne({ base: 'btc', target: 'usd' }, (err, doc) => {
+				expect(doc.customJSON()).to.eql(CryptoMock.btc_usd);	
+				done();
+			});
 		});
 
 		it('should return null if not found', (done) => {
-			done();
+			CryptoPair.findOne({ base: 'eth', target: 'usd' }, (err, doc) => {
+				expect(doc).to.be.null;
+				done();
+			});
 		});
 	});
 

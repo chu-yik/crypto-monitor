@@ -22,6 +22,7 @@ const cryptoPairSchema = new Schema({
 cryptoPairSchema.methods.customJSON = function() {
 	const json = this.toJSON();
 	delete json._id;
+	delete json.__v;
 	return json;
 };
 
