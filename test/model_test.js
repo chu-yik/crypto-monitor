@@ -1,6 +1,7 @@
 const chai = require('chai');
 const expect = chai.expect;
 const CryptoPair = require('../app/model/crypto-pair');
+const CryptoMock = require('./mock/crypto-mock');
 
 describe('Crypto pair model tests', () => {
 	describe('model validation', () => {
@@ -23,10 +24,14 @@ describe('Crypto pair model tests', () => {
 
 	describe('model initialization', () => {
 		it('should force lowercase on base', (done) => {
+			const c = new CryptoPair(CryptoMock.btc_usd_cap);
+			expect(c.base).to.eql('btc');
 			done();
 		});
 
 		it('should force lowercase on target', (done) => {
+			const c = new CryptoPair(CryptoMock.btc_usd_cap);
+			expect(c.target).to.eql('usd');
 			done();
 		});
 	});
