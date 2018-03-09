@@ -4,7 +4,9 @@
   "description": "a real time cryptocurrency monitoring app, as an exercise for learning node.js and react, also as submission for a programming test",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --exit"
+    "pretest": "mongod --dbpath data --fork --logpath /dev/null",
+    "test": "export NODE_ENV='test' && mocha --exit",
+    "posttest": "mongo admin --eval 'db.shutdownServer()' > /dev/null"
   },
   "repository": {
     "type": "git",

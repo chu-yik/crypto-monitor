@@ -1,4 +1,5 @@
 {
 	"port": 8080,
-	"expireInSec": 60
+	"expireInSec": 60,
+	"dbUrl": "mongodb://localhost:27017/production"
 }
