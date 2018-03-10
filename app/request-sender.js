@@ -1,15 +1,35 @@
+const axios = require('axios');
 const util = require('./util/util');
+const CryptoPair = require('./model/crypto-pair');
 
+/**
+ * Request sender to send HTTP GET request to third party crypto API
+ * it will parse the response and send back the json for response
+ * or send back error message in case of pair not found or other error
+ */
 class RequestSender {
 	constructor() {
-		
+
 	}
 
 	sendRequest(query, callback) {
 		const api = util.apiForQuery(query);
 		console.log('sending GET to: ' + api);
-		callback();
-		// TODO: send http request
+		axios.get(api)
+			.then((res) => {
+				if (res.data.success) {
+					const crypto = new CryptoPair(res.data.ticker);
+					crypto.lastUpdated = res.data.timestamp;
+					crypto.upsert((err, doc) => {
+						callback(undefined, doc.customJSON());
+					});
+				} else {
+					callback(res.data.error, undefined);
+				}
+			})
+			.catch((err) => {
+				callback(err.message, undefined);
+			});
 	}
 }
 

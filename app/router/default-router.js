@@ -1,6 +1,11 @@
 const CryptoPair = require('../model/crypto-pair');
 const util = require('../util/util');
 
+/**
+ * Implementation of a default router that routes the get crypto pair request
+ * It uses a request sender to send request to and parse response from
+ * designated third party API specified in the config
+ */
 class DefaultRouter {
 	constructor(requestSender) {
 		this.requestSender = requestSender;
@@ -12,12 +17,19 @@ class DefaultRouter {
 		query.target = req.params.target;
 		CryptoPair.findOne(query, (err, doc) => {
 			if (util.shouldUpdateFromApi(doc)) {
-				this.requestSender.sendRequest(query, (response) => {
-					// TODO: parse response
-					res.status(404).send({error: 'not found'});
+				this.requestSender.sendRequest(query, (err, result) => {
+					if (result) {
+						res.json(result);
+					} else if (doc) {
+						res.json(doc.customJSON());
+					} else {
+						res.send({
+							error: err
+						});
+					}
 				});
 			} else {
-				res.status(200).json(doc.customJSON());
+				res.json(doc.customJSON());
 			}
 		});
 	}
