@@ -160,8 +160,27 @@ describe('Crypto-monitor server tests', () => {
 		});
 
 		describe('when queried crypto pair in DB is not found but failed getting api response', () => {
-			it('should return error', (done) => {
-				done();
+
+			it('should return error message, when response is 404', (done) => {
+				// fake response to be 404 error
+				nock(api).get('/eth-usd').reply(404);
+				chai.request(testServer.app)
+					.get('/usd/eth')
+					.end((err, res) => {
+						expect(res.body.error).to.exist;
+						done();
+					});
+			});
+
+			it('should return error message, when response is error message', (done) => {
+				// fake response to be response error message
+				nock(api).get('/eth-usd').reply(200, CryptoMock.error_response);
+				chai.request(testServer.app)
+					.get('/usd/eth')
+					.end((err, res) => {
+						expect(res.body.error).to.exist;
+						done();
+					});
 			});
 		});
 	});
