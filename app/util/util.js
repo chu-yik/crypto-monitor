@@ -7,7 +7,7 @@ module.exports.shouldUpdateFromApi = function(doc) {
 		const epochSecNow = Math.ceil(Date.now() / 1000);
 		const lastUpdated = doc.customJSON().lastUpdated;
 		console.log('now: ' + epochSecNow + ', last updated: ' + lastUpdated);
-		return epochSecNow - interval > lastUpdated; 
+		return epochSecNow - interval > lastUpdated;
 	}
 	return true;
 };
