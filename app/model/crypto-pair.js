@@ -19,7 +19,7 @@ const cryptoPairSchema = new Schema({
 /**
  * ensure unique compound index with base + target
  */
-cryptoPairSchema.index({ base: 1, target: 1}, { unique: true });
+cryptoPairSchema.index({ base: 1, target: 1 }, { unique: true });
 
 /**
  * Returns a custom JSON without the _id field

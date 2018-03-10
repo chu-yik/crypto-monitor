@@ -85,7 +85,7 @@ module.exports.eth_usd_response_new = {
 /**
  * mock response data for erorr response from 3rd party end point
  */
-module.exports.error_response = { 
-	success: false, 
-	error: 'Pair not found' 
+module.exports.error_response = {
+	success: false,
+	error: 'Pair not found'
 };
