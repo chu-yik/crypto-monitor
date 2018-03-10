@@ -21,14 +21,14 @@ class RequestSender {
 					const crypto = new CryptoPair(res.data.ticker);
 					crypto.lastUpdated = res.data.timestamp;
 					crypto.upsert((err, doc) => {
-						callback(undefined, doc.customJSON());
+						if (callback) { callback(undefined, doc.customJSON()); }
 					});
 				} else {
-					callback(res.data.error, undefined);
+					if (callback) { callback(res.data.error, undefined); }
 				}
 			})
 			.catch((err) => {
-				callback(err.message, undefined);
+				if (callback) { callback(err.message, undefined); }
 			});
 	}
 }
