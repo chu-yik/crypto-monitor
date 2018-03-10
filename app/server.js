@@ -23,7 +23,9 @@ class MyCryptoServer {
 		this.app.use('/', this.router.send404);
 		this.app.listen(port, () => {
 			console.log('Server started, listening on port ' + port);
-			callback();
+			if (callback) { 
+				callback(); 
+			}
 		});
 	}
 }
