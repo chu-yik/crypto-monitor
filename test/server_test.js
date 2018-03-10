@@ -21,12 +21,14 @@ describe('Crypto-monitor server tests', () => {
 
 	before((done) => {
 		testServer.connectToDatabase(() => {
-			const c = new CryptoPair(CryptoMock.btc_usd);
-			CryptoPair.remove({}, (err) => {
-				c.save((err) => {
-					testServer.start(done);
-				});
-			});
+			testServer.start(done);
+		});
+	});
+
+	beforeEach('resetting DB', (done) => {
+		const c = new CryptoPair(CryptoMock.btc_usd);
+		CryptoPair.remove({}, (err) => {
+			c.save(done);
 		});
 	});
 
@@ -66,7 +68,8 @@ describe('Crypto-monitor server tests', () => {
 				nock(api).get('/eth-usd').reply(200, CryptoMock.eth_usd_response_new);
 			});
 
-			afterEach('restoring time if faked', () => {
+			afterEach('cleaning mock response and restoring time if faked', () => {
+				nock.cleanAll();
 				if (clock) {
 					clock.restore();
 				}
@@ -124,7 +127,8 @@ describe('Crypto-monitor server tests', () => {
 				clock = sinon.useFakeTimers({ now: (expected.lastUpdated + interval + 1) * 1000 });
 			});
 
-			afterEach('restoring time', () => {
+			afterEach('cleaning mock response and restoring time', () => {
+				nock.cleanAll();
 				if (clock) {
 					clock.restore();
 				}
