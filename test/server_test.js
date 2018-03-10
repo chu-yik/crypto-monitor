@@ -1,4 +1,5 @@
 const config = require('config');
+const api = config.get('api');
 const nock = require('nock');
 const sinon = require('sinon');
 const chai = require('chai');
@@ -60,13 +61,12 @@ describe('Crypto-monitor server tests', () => {
 		describe('when queried crypto pair in DB is not found / has expired', () => {
 
 			var clock;
-			beforeEach(() => {
-				const api = config.get('api');
+			beforeEach('mocking http responses', () => {
 				nock(api).get('/btc-usd').reply(200, CryptoMock.btc_usd_response_new);
 				nock(api).get('/eth-usd').reply(200, CryptoMock.eth_usd_response_new);
 			});
 
-			afterEach(() => {
+			afterEach('restoring time if faked', () => {
 				if (clock) {
 					clock.restore();
 				}
@@ -116,8 +116,42 @@ describe('Crypto-monitor server tests', () => {
 		});
 
 		describe('when queried crypto pair in DB has expired but failed getting api response', () => {
-			it('should return the existing cryto pair from DB', (done) => {
-				done();
+
+			const expected = CryptoMock.btc_usd;
+			var clock;
+			beforeEach('faking time to have expired', () => {
+				const interval = config.get('expireInSec');
+				clock = sinon.useFakeTimers({ now: (expected.lastUpdated + interval + 1) * 1000 });
+			});
+
+			afterEach('restoring time', () => {
+				if (clock) {
+					clock.restore();
+				}
+			});
+
+			it('should return the existing cryto pair from DB, when response is 404', (done) => {
+				// fake response to be 404 error
+				nock(api).get('/btc-usd').reply(404);
+				chai.request(testServer.app)
+					.get('/usd/btc')
+					.end((err, res) => {
+						expect(res.body).to.eql(expected);
+						done();
+					});
+			});
+
+			it('should return the existing cryto pair from DB, when response is error message', (done) => {
+				// fake response to be response error message
+				nock(api).get('/btc-usd').reply(200, CryptoMock.error_response);
+				// fake time to have expired
+				chai.request(testServer.app)
+					.get('/usd/btc')
+					.end((err, res) => {
+						expect(res.body).to.eql(expected);
+						clock.restore();
+						done();
+					});
 			});
 		});
 
