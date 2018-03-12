@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const config = require('config');
 const port = config.get('port');
 const dbUrl = config.get('dbUrl');
+const corsOrigin = config.get('corsOrigin');
 
 class MyCryptoServer {
 	constructor(router) {
@@ -19,6 +20,11 @@ class MyCryptoServer {
 
 	start(callback) {
 		this.app.use(bodyParser.json());
+		this.app.use((req, res, next) => {
+			// allowing CORS (Cross-Origin Resource Sharing) before next layer of middleware
+			res.setHeader('Access-Control-Allow-Origin', corsOrigin);
+			next();
+		});
 		this.app.route('/:target/:base').get(this.router.getCryptoPair.bind(this.router));
 		this.app.use('/', this.router.send404);
 		this.app.listen(port, () => {
