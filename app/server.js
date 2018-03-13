@@ -28,7 +28,7 @@ class MyCryptoServer {
 		});
 		this.app.route('/:target/:base').get(this.router.getCryptoPair.bind(this.router));
 		this.app.use('/', this.router.send404);
-		this.app.listen(port, () => {
+		this.app.listen(process.env.PORT || port, () => {
 			debug('Server started, listening on port %d', port);
 			if (callback) { callback(); }
 		});
