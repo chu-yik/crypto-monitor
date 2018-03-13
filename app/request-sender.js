@@ -1,4 +1,6 @@
 const axios = require('axios');
+const config = require('config');
+const axiosConfig = config.get('axiosConfig');
 const util = require('./util/util');
 const CryptoPair = require('./model/crypto-pair');
 
@@ -15,7 +17,11 @@ class RequestSender {
 	sendRequest(query, callback) {
 		const api = util.apiForQuery(query);
 		console.log('sending GET to: ' + api);
-		axios.get(api)
+		this.sendRequestAndParse(api, callback);
+	}
+
+	sendRequestAndParse(url, callback) {
+		axios.get(url, axiosConfig)
 			.then((res) => {
 				if (res.data.success) {
 					const crypto = new CryptoPair(res.data.ticker);

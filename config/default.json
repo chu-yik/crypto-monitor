@@ -3,5 +3,10 @@
 	"expireInSec": 60,
 	"api": "https://api.cryptonator.com/api/ticker/",
 	"dbUrl": "mongodb://localhost:27017/production",
-	"corsOrigin": "http://localhost:3000"
+	"corsOrigin": "*",
+	"axiosConfig": {
+		"maxRedirects": 10,
+		"maxContentLength": 20971520,
+		"timeOut": 2500
+	}
 }
