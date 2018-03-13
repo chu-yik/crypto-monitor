@@ -28,6 +28,7 @@ class RequestSender {
 					debug('data received');
 					const crypto = new CryptoPair(res.data.ticker);
 					crypto.lastUpdated = res.data.timestamp;
+					crypto.lastQueried = util.epochSecNow();
 					crypto.upsert((err, doc) => {
 						if (callback) { callback(undefined, doc.customJSON()); }
 					});

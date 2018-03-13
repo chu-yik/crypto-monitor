@@ -4,16 +4,24 @@ const api = config.get('api');
 
 const createDebug = require('debug');
 createDebug.formatters.t = (v) => {
-	return new Date(v * 1000).toLocaleTimeString();
+	return new Date(v * 1000).toLocaleString('en-GB');
+};
+
+module.exports.epochSecNow = function() {
+	return Math.ceil(Date.now() / 1000);
 };
 
 module.exports.shouldUpdateFromApi = function(doc) {
 	if (doc) {
 		const interval = config.get('expireInSec');
-		const epochSecNow = Math.ceil(Date.now() / 1000);
-		const lastUpdated = doc.customJSON().lastUpdated;
-		debug('now: %t, last updated: %t', epochSecNow, lastUpdated);
-		return epochSecNow - interval > lastUpdated;
+		const querySpacing = config.get('querySpacingInSec');
+		const epochSecNow = this.epochSecNow();
+		const lastUpdated = doc.lastUpdated;
+		const lastQueried = doc.lastQueried;
+		debug('now: %t, last updated: %t, last queried: %t', epochSecNow, lastUpdated, lastQueried);
+		const shouldUpdate = epochSecNow - interval > lastUpdated && 
+			(lastQueried === undefined || epochSecNow - querySpacing > lastQueried);
+		return shouldUpdate;
 	}
 	return true;
 };

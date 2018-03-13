@@ -23,7 +23,10 @@ class DefaultRouter {
 					if (result) {
 						res.json(result);
 					} else if (doc) {
-						res.json(doc.customJSON());
+						doc.lastQueried = util.epochSecNow();
+						doc.upsert((err, doc) => {
+							res.json(doc.customJSON());
+						});
 					} else {
 						res.send({
 							error: err
@@ -31,7 +34,7 @@ class DefaultRouter {
 					}
 				});
 			} else {
-				debug('database stored info is up to date');
+				debug('using database stored info');
 				res.json(doc.customJSON());
 			}
 		});

@@ -14,6 +14,7 @@ const cryptoPairSchema = new Schema({
 	volume: Number,
 	change: Number,
 	lastUpdated: Number,
+	lastQueried: Number,
 });
 
 /**
@@ -28,6 +29,7 @@ cryptoPairSchema.methods.customJSON = function() {
 	const json = this.toJSON();
 	delete json._id;
 	delete json.__v;
+	delete json.lastQueried;
 	return json;
 };
 
@@ -44,6 +46,7 @@ cryptoPairSchema.methods.upsert = function(callback) {
 	newData.volume = this.volume;
 	newData.change = this.change;
 	newData.lastUpdated = this.lastUpdated;
+	newData.lastQueried = this.lastQueried;
 	this.model('CryptoPair')
 		.findOneAndUpdate(query, newData, { upsert: true, new: true })
 		.exec((err, doc) => {

@@ -1,5 +1,7 @@
 const config = require('config');
 const api = config.get('api');
+const interval = config.get('expireInSec');
+const querySpacing = config.get('querySpacingInSec');
 const nock = require('nock');
 const sinon = require('sinon');
 const chai = require('chai');
@@ -64,8 +66,8 @@ describe('Crypto-monitor server tests', () => {
 
 			var clock;
 			beforeEach('mocking http responses', () => {
-				nock(api).get('/btc-usd').reply(200, CryptoMock.btc_usd_response_new);
-				nock(api).get('/eth-usd').reply(200, CryptoMock.eth_usd_response_new);
+				nock(api).get('/btc-usd').reply(200, CryptoMock.btc_usd_response_new).persist();
+				nock(api).get('/eth-usd').reply(200, CryptoMock.eth_usd_response_new).persist();
 			});
 
 			afterEach('cleaning mock response and restoring time if faked', () => {
@@ -116,6 +118,46 @@ describe('Crypto-monitor server tests', () => {
 						done();
 					});
 			});
+
+			it('should not send query if spacing from last query is not established', (done) => {
+				const spy = sinon.spy(sender, 'sendRequest');
+				const expected = CryptoMock.btc_usd_new;
+				// mocking time so that server response has expired
+				clock = sinon.useFakeTimers({ now: (expected.lastUpdated + interval + 1) * 1000 });
+				// sending two consecutive request, make sure the http request is fired only once
+				chai.request(testServer.app)
+					.get('/usd/btc')
+					.end((err, res) => {
+						chai.request(testServer.app)
+							.get('/usd/btc')
+							.end((err, res) => {
+								expect(spy.calledOnce).to.be.true;
+								sender.sendRequest.restore();
+								done();
+							});
+					});
+			});
+
+			it('should send query if spacing from last query is established', (done) => {
+				const spy = sinon.spy(sender, 'sendRequest');
+				const expected = CryptoMock.btc_usd_new;
+				// mocking time so that server response has expired
+				clock = sinon.useFakeTimers({ now: (expected.lastUpdated + interval + 1) * 1000 });
+				// sending two consecutive request, make sure the http request is fired only once
+				chai.request(testServer.app)
+					.get('/usd/btc')
+					.end((err, res) => {
+						// advance by spacing + 1 sec
+						clock.tick((querySpacing + 1) * 1000);
+						chai.request(testServer.app)
+							.get('/usd/btc')
+							.end((err, res) => {
+								expect(spy.calledTwice).to.be.true;
+								sender.sendRequest.restore();
+								done();
+							});
+					});
+			});
 		});
 
 		describe('when queried crypto pair in DB has expired but failed getting api response', () => {
@@ -123,7 +165,6 @@ describe('Crypto-monitor server tests', () => {
 			const expected = CryptoMock.btc_usd;
 			var clock;
 			beforeEach('faking time to have expired', () => {
-				const interval = config.get('expireInSec');
 				clock = sinon.useFakeTimers({ now: (expected.lastUpdated + interval + 1) * 1000 });
 			});
 
@@ -148,13 +189,50 @@ describe('Crypto-monitor server tests', () => {
 			it('should return the existing cryto pair from DB, when response is error message', (done) => {
 				// fake response to be response error message
 				nock(api).get('/btc-usd').reply(200, CryptoMock.error_response);
-				// fake time to have expired
 				chai.request(testServer.app)
 					.get('/usd/btc')
 					.end((err, res) => {
 						expect(res.body).to.eql(expected);
 						clock.restore();
 						done();
+					});
+			});
+
+			it('should not send query if spacing from last query is not established', (done) => {
+				// fake response to be response error message
+				nock(api).get('/btc-usd').reply(200, CryptoMock.error_response);
+				const spy = sinon.spy(sender, 'sendRequest');
+				// sending two consecutive request, make sure the http request is fired only once
+				chai.request(testServer.app)
+					.get('/usd/btc')
+					.end((err, res) => {
+						chai.request(testServer.app)
+							.get('/usd/btc')
+							.end((err, res) => {
+								expect(spy.calledOnce).to.be.true;
+								sender.sendRequest.restore();
+								done();
+							});
+					});
+			});
+
+			it('should send query if spacing from last query is established', (done) => {
+				// fake response to be response error message
+				nock(api).get('/btc-usd').reply(200, CryptoMock.error_response).persist();
+				const spy = sinon.spy(sender, 'sendRequest');
+				// sending two consecutive request
+				chai.request(testServer.app)
+					.get('/usd/btc')
+					.end((err, res) => {
+						// advance by spacing + 1 sec
+						clock.tick((querySpacing + 1) * 1000);
+						chai.request(testServer.app)
+							.get('/usd/btc')
+							.end((err, res) => {
+								expect(spy.calledTwice).to.be.true;
+								sender.sendRequest.restore();
+								done();
+							});
 					});
 			});
 		});
