@@ -1,3 +1,4 @@
+const debug = require('debug')('crypto:sender');
 const axios = require('axios');
 const config = require('config');
 const axiosConfig = config.get('axiosConfig');
@@ -16,7 +17,7 @@ class RequestSender {
 
 	sendRequest(query, callback) {
 		const api = util.apiForQuery(query);
-		console.log('sending GET to: ' + api);
+		debug('sending GET to: ' + api);
 		this.sendRequestAndParse(api, callback);
 	}
 
@@ -24,16 +25,19 @@ class RequestSender {
 		axios.get(url, axiosConfig)
 			.then((res) => {
 				if (res.data.success) {
+					debug('data received');
 					const crypto = new CryptoPair(res.data.ticker);
 					crypto.lastUpdated = res.data.timestamp;
 					crypto.upsert((err, doc) => {
 						if (callback) { callback(undefined, doc.customJSON()); }
 					});
 				} else {
+					debug('error parsing response from 3rd party api');
 					if (callback) { callback(res.data.error, undefined); }
 				}
 			})
 			.catch((err) => {
+				debug('error occured: ' + err.message);
 				if (callback) { callback(err.message, undefined); }
 			});
 	}

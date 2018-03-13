@@ -1,3 +1,4 @@
+const debug = require('debug')('crypto:server');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -14,7 +15,7 @@ class MyCryptoServer {
 
 	connectToDatabase(callback) {
 		mongoose.connect(dbUrl);
-		mongoose.connection.on('error', console.error.bind(console, 'Database Connection Error'));
+		mongoose.connection.on('error', debug.bind(debug, 'Database Connection Error'));
 		mongoose.connection.once('open', callback);
 	}
 
@@ -28,7 +29,7 @@ class MyCryptoServer {
 		this.app.route('/:target/:base').get(this.router.getCryptoPair.bind(this.router));
 		this.app.use('/', this.router.send404);
 		this.app.listen(port, () => {
-			console.log('Server started, listening on port ' + port);
+			debug('Server started, listening on port %d', port);
 			if (callback) { callback(); }
 		});
 	}
