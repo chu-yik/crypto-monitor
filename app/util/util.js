@@ -7,11 +7,15 @@ createDebug.formatters.t = (v) => {
 	return new Date(v * 1000).toLocaleTimeString();
 };
 
+module.exports.epochSecNow = function() {
+	return Math.ceil(Date.now() / 1000);
+};
+
 module.exports.shouldUpdateFromApi = function(doc) {
 	if (doc) {
 		const interval = config.get('expireInSec');
 		const querySpacing = config.get('querySpacingInSec');
-		const epochSecNow = Math.ceil(Date.now() / 1000);
+		const epochSecNow = this.epochSecNow();
 		const lastUpdated = doc.lastUpdated;
 		const lastQueried = doc.lastQueried;
 		debug('now: %t, last updated: %t, last queried: %t', epochSecNow, lastUpdated, lastQueried);

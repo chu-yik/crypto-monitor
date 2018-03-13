@@ -23,8 +23,7 @@ class DefaultRouter {
 					if (result) {
 						res.json(result);
 					} else if (doc) {
-						const epochSecNow = Math.ceil(Date.now() / 1000);
-						doc.lastQueried = epochSecNow;
+						doc.lastQueried = util.epochSecNow();
 						doc.upsert((err, doc) => {
 							res.json(doc.customJSON());
 						});
