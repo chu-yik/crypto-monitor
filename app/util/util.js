@@ -4,7 +4,7 @@ const api = config.get('api');
 
 const createDebug = require('debug');
 createDebug.formatters.t = (v) => {
-	return new Date(v * 1000).toLocaleTimeString();
+	return new Date(v * 1000).toLocaleString('en-GB');
 };
 
 module.exports.epochSecNow = function() {
