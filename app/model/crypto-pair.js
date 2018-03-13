@@ -47,7 +47,7 @@ cryptoPairSchema.methods.upsert = function(callback) {
 	this.model('CryptoPair')
 		.findOneAndUpdate(query, newData, { upsert: true, new: true })
 		.exec((err, doc) => {
-			callback(err, doc);
+			if (callback) { callback(err, doc); }
 		});
 };
 

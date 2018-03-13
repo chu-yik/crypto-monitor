@@ -4,6 +4,10 @@
   "description": "a real time cryptocurrency monitoring app, as an exercise for learning node.js and react, also as submission for a programming test",
   "main": "index.js",
   "scripts": {
+    "prestart": "mongod --dbpath data --fork --logpath /dev/null",
+    "start": "export DEBUG='crypto:*' && node index.js my-crypto-server",
+    "stop": "killall -SIGINT my-crypto-server",
+    "poststop": "mongo admin --eval 'db.shutdownServer()' > /dev/null",
     "pretest": "mongod --dbpath data --fork --logpath /dev/null",
     "test": "export NODE_ENV='test' && mocha --exit",
     "posttest": "mongo admin --eval 'db.shutdownServer()' > /dev/null"
@@ -33,6 +37,7 @@
     "axios": "^0.18.0",
     "body-parser": "^1.18.2",
     "config": "^1.30.0",
+    "debug": "^3.1.0",
     "express": "^4.16.2",
     "mongoose": "^5.0.9"
   }

@@ -1,3 +1,4 @@
+const debug = require('debug')('crypto:router');
 const CryptoPair = require('../model/crypto-pair');
 const util = require('../util/util');
 
@@ -15,6 +16,7 @@ class DefaultRouter {
 		const query = {};
 		query.base = req.params.base;
 		query.target = req.params.target;
+		debug('query: %o', query);
 		CryptoPair.findOne(query, (err, doc) => {
 			if (util.shouldUpdateFromApi(doc)) {
 				this.requestSender.sendRequest(query, (err, result) => {
@@ -29,6 +31,7 @@ class DefaultRouter {
 					}
 				});
 			} else {
+				debug('database stored info is up to date');
 				res.json(doc.customJSON());
 			}
 		});
