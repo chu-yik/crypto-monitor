@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "export DEBUG='crypto:*' && node index.js mc-crypto-server",
-    "stop": "killall -SIGINT mc-crypto-server",
+    "stop": "killall -SIGINT mc-crypto-server"
   },
   "repository": {
     "type": "git",
