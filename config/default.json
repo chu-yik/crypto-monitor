@@ -1,6 +1,6 @@
 {
 	"port": 8080,
-	"expireInSec": 60,
+	"expireInSec": 120,
 	"api": "https://api.cryptonator.com/api/ticker/",
 	"dbUrl": "mongodb://localhost:27017/production",
 	"corsOrigin": "*",
