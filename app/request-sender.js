@@ -28,6 +28,8 @@ class RequestSender {
 					debug('data received');
 					const crypto = new CryptoPair(res.data.ticker);
 					crypto.lastUpdated = res.data.timestamp;
+					const epochSecNow = Math.ceil(Date.now() / 1000);
+					crypto.lastQueried = epochSecNow;
 					crypto.upsert((err, doc) => {
 						if (callback) { callback(undefined, doc.customJSON()); }
 					});
