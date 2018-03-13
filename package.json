@@ -1,14 +1,14 @@
 {
   "name": "crypto-monitor",
   "version": "1.0.0",
-  "description": "a real time cryptocurrency monitoring app, as an exercise for learning node.js and react, also as submission for a programming test",
+  "description": "api for cryptocurrency monitor, uses nodejs and mongodb",
   "main": "index.js",
   "scripts": {
-    "prestart": "mongod --dbpath data --fork --logpath /dev/null",
+    "prestart": "mongod --fork --logpath /dev/null",
     "start": "export DEBUG='crypto:*' && node index.js my-crypto-server",
     "stop": "killall -SIGINT my-crypto-server",
     "poststop": "mongo admin --eval 'db.shutdownServer()' > /dev/null",
-    "pretest": "mongod --dbpath data --fork --logpath /dev/null",
+    "pretest": "mongod --fork --logpath /dev/null",
     "test": "export NODE_ENV='test' && mocha --exit",
     "posttest": "mongo admin --eval 'db.shutdownServer()' > /dev/null"
   },
