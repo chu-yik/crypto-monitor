@@ -3,7 +3,7 @@
 	"expireInSec": 120,
 	"querySpacingInSec": 60,
 	"api": "https://api.cryptonator.com/api/ticker/",
-	"dbUrl": "mongodb://localhost:27017/production",
+	"dbUrl": "mongodb://heroku_81nncr71:mlhddgpbsp3l33pphafgtm49si@ds213239.mlab.com:13239/heroku_81nncr71",
 	"corsOrigin": "*",
 	"axiosConfig": {
 		"maxRedirects": 10,
