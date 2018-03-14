@@ -94,7 +94,7 @@ A detailed explanation of the API can be found at [this page on cryptonator](htt
 
 **[node (and npm)](https://nodejs.org/en/download/)** and **[mongodb](https://docs.mongodb.com/manual/installation/)** are required for building the project. See relevant link on installation.
 
-Alternatively the project can be built using [docker](https://www.docker.com), see the section on [Docker](#Docker) for more detail.
+Alternatively the project can be built using [docker](https://www.docker.com), see the section on [Docker](#docker) for more detail.
 
 ### Tested versions
 
