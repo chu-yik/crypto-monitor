@@ -1,7 +1,7 @@
 {
   "name": "crypto-monitor",
   "version": "1.0.0",
-  "description": "api for cryptocurrency monitor, uses nodejs and mongodb",
+  "description": "api server built with node.js for cryptocurrency information querying, uses mongodb for data storage",
   "main": "index.js",
   "scripts": {
     "start": "export DEBUG='crypto:*' && node index.js mc-crypto-server",
@@ -13,7 +13,7 @@
   },
   "keywords": [
     "node.js",
-    "react"
+    "mongodb"
   ],
   "author": "MC",
   "license": "MIT",
