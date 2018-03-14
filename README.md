@@ -94,6 +94,8 @@ A detailed explanation of the API can be found at [this page on cryptonator](htt
 
 **[node (and npm)](https://nodejs.org/en/download/)** and **[mongodb](https://docs.mongodb.com/manual/installation/)** are required for building the project. See relevant link on installation.
 
+Alternatively the project can be built using [docker](https://www.docker.com), see the section on [Docker](#Docker) for more detail.
+
 ### Tested versions
 
 This project was tested on macOS 10.13 with [homebrew](https://brew.sh) managed node (and npm) and mongodb.
@@ -277,3 +279,33 @@ The branch used is [heroku](https://github.com/chu-yik/crypto-monitor/tree/herok
 
 The app hosted on heroku will [sleep a period of inactivity](https://devcenter.heroku.com/articles/free-dyno-hours), so chances are the initial load will have a short delay.
 
+
+## Docker
+
+To build the project with docker, first [install docker](https://docs.docker.com/install/).
+
+Check out the [docker branch](https://github.com/chu-yik/crypto-monitor/tree/docker) instead of master.
+
+### Starting the server
+
+Docker-compose is used to build and start the server, to start the server run the following command:
+
+```
+docker-compose up
+```
+
+This will start the server at *localhost:8080*, it is possible to change the port mapping by tweaking the *docker-compose.yml* file.
+
+To start the server in background supply the *'-d'* option:
+
+```
+docker-compose up -d
+```
+
+### Stoping the server
+
+The server can be stopped by 'Ctrl-C' in the terminal that started it, or the following command if the server was started in background mode:
+
+```
+docker-compose stop
+```
