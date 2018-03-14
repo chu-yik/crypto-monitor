@@ -1,7 +1,7 @@
 {
   "name": "crypto-monitor",
   "version": "1.0.0",
-  "description": "a real time cryptocurrency monitoring app, as an exercise for learning node.js and react, also as submission for a programming test",
+  "description": "api server built with node.js for cryptocurrency information querying, uses mongodb for data storage",
   "main": "index.js",
   "scripts": {
     "prestart": "mongod --dbpath data --fork --logpath /dev/null",
@@ -18,7 +18,7 @@
   },
   "keywords": [
     "node.js",
-    "react"
+    "mongodb"
   ],
   "author": "MC",
   "license": "MIT",
